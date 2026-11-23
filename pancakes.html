@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сколько нужно для блинов?</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(160deg, #FFF3E0 0%, #FFE0B2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    color: #4E342E;
+  }
+
+  .card {
+    background: #FFFFFF;
+    border-radius: 28px;
+    box-shadow: 0 20px 60px rgba(121, 85, 72, 0.25);
+    max-width: 480px;
+    width: 100%;
+    padding: 40px 36px;
+  }
+
+  h1 {
+    font-size: 28px;
+    text-align: center;
+    color: #5D4037;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #A1887F;
+    margin-top: 8px;
+    margin-bottom: 28px;
+    font-size: 15px;
+  }
+
+  .picker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 32px;
+  }
+
+  .btn {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    border: none;
+    background: #FFB74D;
+    color: #4E342E;
+    font-size: 28px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.2s;
+  }
+
+  .btn:hover { background: #FFA726; }
+  .btn:active { transform: scale(0.92); }
+  .btn:disabled {
+    background: #FFE0B2;
+    color: #D7CCC8;
+    cursor: default;
+    transform: none;
+  }
+
+  .portion-value {
+    font-size: 52px;
+    font-weight: 800;
+    min-width: 130px;
+    text-align: center;
+    color: #E65100;
+  }
+
+  .portion-label {
+    font-size: 15px;
+    color: #8D6E63;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+  }
+
+  .item {
+    background: #FFF8E1;
+    border-radius: 20px;
+    padding: 22px 10px;
+    text-align: center;
+    transition: background 0.2s;
+  }
+
+  .item .value {
+    font-size: 40px;
+    font-weight: 800;
+    color: #E65100;
+    line-height: 1.1;
+  }
+
+  .item .unit {
+    font-size: 16px;
+    color: #8D6E63;
+    font-weight: 600;
+  }
+
+  .item .name {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #6D4C41;
+  }
+
+  .note {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 13px;
+    color: #A1887F;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>🥞 Сколько нужно для блинов?</h1>
+    <p class="subtitle">На 2 порции: 150 г муки, 250 мл молока и 1 яйцо</p>
+
+    <p class="portion-label">Количество порций</p>
+    <div class="picker">
+      <button class="btn" id="minus" aria-label="Убрать порцию">&minus;</button>
+      <div class="portion-value" id="portions">2</div>
+      <button class="btn" id="plus" aria-label="Добавить порцию">+</button>
+    </div>
+
+    <div class="grid">
+      <div class="item">
+        <div class="value" id="flour">150</div>
+        <div class="unit">г</div>
+        <div class="name">муки</div>
+      </div>
+      <div class="item">
+        <div class="value" id="milk">250</div>
+        <div class="unit">мл</div>
+        <div class="name">молока</div>
+      </div>
+      <div class="item">
+        <div class="value" id="eggs">1</div>
+        <div class="unit">шт</div>
+        <div class="name">яйца</div>
+      </div>
+    </div>
+
+    <p class="note">Расчёт: 75 г муки, 125 мл молока и &#189; яйца на порцию</p>
+  </div>
+
+<script>
+  const MIN = 2, MAX = 8;
+  let portions = 2;
+
+  const flourEl = document.getElementById('flour');
+  const milkEl  = document.getElementById('milk');
+  const eggsEl  = document.getElementById('eggs');
+  const portEl  = document.getElementById('portions');
+  const minusBtn = document.getElementById('minus');
+  const plusBtn  = document.getElementById('plus');
+
+  function formatEggs(n) {
+    return Number.isInteger(n) ? String(n) : n.toFixed(1).replace('.', ',');
+  }
+
+  function render() {
+    portEl.textContent = portions;
+    flourEl.textContent = portions * 75;
+    milkEl.textContent  = portions * 125;
+    eggsEl.textContent  = formatEggs(portions / 2);
+
+    minusBtn.disabled = portions <= MIN;
+    plusBtn.disabled  = portions >= MAX;
+  }
+
+  minusBtn.addEventListener('click', () => {
+    if (portions > MIN) { portions--; render(); }
+  });
+
+  plusBtn.addEventListener('click', () => {
+    if (portions < MAX) { portions++; render(); }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft'  && portions > MIN) { portions--; render(); }
+    if (e.key === 'ArrowRight' && portions < MAX) { portions++; render(); }
+  });
+
+  render();
+</script>
+</body>
+</html>
